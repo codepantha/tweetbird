@@ -13,7 +13,7 @@ import SidebarRow from './SidebarRow';
 
 function Sidebar(): JSX.Element {
   return (
-    <div>
+    <div className="col-span-2 items-center md:items-start flex flex-col">
       <img src="/images/logo.svg" alt="logo" className="h-8 w-10" />
       <SidebarRow Icon={HomeIcon} title="Home" />
       <SidebarRow Icon={HashtagIcon} title="Explore" />

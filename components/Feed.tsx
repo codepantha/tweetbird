@@ -1,8 +1,14 @@
 import React from 'react';
 import { FiRefreshCcw } from 'react-icons/fi';
+import { Tweet } from '../typings';
 import TweetBox from './TweetBox';
+import TweetComponent from './Tweet';
 
-function Feed() {
+interface Props {
+  tweets: Tweet[];
+}
+
+function Feed({ tweets }: Props) {
   return (
     <div className="col-span-7 lg:col-span-5 border-x">
       <div className="flex justify-between">
@@ -12,6 +18,9 @@ function Feed() {
 
       <TweetBox />
 
+      {tweets.map(tweet => (
+        <TweetComponent tweet={tweet} />
+      ))}
     </div>
   );
 }

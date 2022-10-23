@@ -16,6 +16,5 @@ const feedQuery = groq`
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const tweets: Data = await sanityClient.fetch(feedQuery);
-  console.log(tweets);
   res.status(200).json({ tweets });
 }

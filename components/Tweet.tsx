@@ -2,6 +2,12 @@ import React from 'react';
 
 import { Tweet } from '../typings';
 import TimeAgo from 'react-timeago';
+import { RiWechatLine } from 'react-icons/ri';
+import {
+  HiOutlineSwitchHorizontal,
+  HiOutlineHeart,
+  HiOutlineUpload
+} from 'react-icons/hi';
 
 interface Props {
   tweet: Tweet;
@@ -31,8 +37,28 @@ function Tweet({ tweet }: Props) {
           <p className="pt-1">{tweet.text}</p>
 
           {tweet.image && (
-            <img src={tweet.image} alt="tweet image" className="m-5 ml-0 mb1 max-h-60 rounded-lg shadow-sm object-cover" />
+            <img
+              src={tweet.image}
+              alt="tweet image"
+              className="m-5 ml-0 mb1 max-h-60 rounded-lg shadow-sm object-cover"
+            />
           )}
+        </div>
+      </div>
+
+      <div className="mt-3 flex justify-between">
+        <div className="flex cursor-pointer items-center space-x-3 text-gray-400">
+          <RiWechatLine />
+          <p className="text-sm">5</p>
+        </div>
+        <div className="flex cursor-pointer items-center space-x-3 text-gray-400">
+          <HiOutlineSwitchHorizontal />
+        </div>
+        <div className="flex cursor-pointer items-center space-x-3 text-gray-400">
+          <HiOutlineHeart />
+        </div>
+        <div className="flex cursor-pointer items-center space-x-3 text-gray-400">
+          <HiOutlineUpload />
         </div>
       </div>
     </div>

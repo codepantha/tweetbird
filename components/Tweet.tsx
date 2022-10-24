@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
-import { Comment, Tweet } from '../typings';
+import { Comment, CommentBody, Tweet } from '../typings';
 import TimeAgo from 'react-timeago';
 import { RiWechatLine } from 'react-icons/ri';
 import {
@@ -9,6 +10,7 @@ import {
   HiOutlineUpload
 } from 'react-icons/hi';
 import { fetchComments } from '../utils/fetchComments';
+import toast from 'react-hot-toast';
 
 interface Props {
   tweet: Tweet;
@@ -16,6 +18,9 @@ interface Props {
 
 function Tweet({ tweet }: Props) {
   const [comments, setComments] = useState<Comment[]>([]);
+  const [commentInput, setCommentInput] = useState<string>('');
+  const [commentBoxVisible, setCommentBoxVisible] = useState<boolean>(false);
+  const { data: session } = useSession();
 
   useEffect(() => {
     refreshComments();
@@ -24,6 +29,39 @@ function Tweet({ tweet }: Props) {
   const refreshComments = async () => {
     const comments: Comment[] = await fetchComments(tweet._id);
     setComments(comments);
+  };
+
+  const postComment = async () => {
+    const comment: CommentBody = {
+      comment: commentInput,
+      tweetId: tweet._id,
+      profileImg: session?.user?.image || '/images/avatar.jpg',
+      username: session?.user?.name || 'anonymous'
+    };
+
+    try {
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/postComment`,
+        {
+          method: 'POST',
+          body: JSON.stringify(comment)
+        }
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const commentToast = toast.loading('Posting comment...');
+
+    await postComment();
+    toast.success('Comment added', { id: commentToast });
+    await refreshComments();
+    setCommentInput('');
+    setCommentBoxVisible(false);
   };
 
   return (
@@ -59,7 +97,10 @@ function Tweet({ tweet }: Props) {
       </div>
 
       <div className="mt-3 flex justify-between">
-        <div className="flex cursor-pointer items-center space-x-3 text-gray-400">
+        <div
+          onClick={() => session && setCommentBoxVisible(!commentBoxVisible)}
+          className="flex cursor-pointer items-center space-x-3 text-gray-400"
+        >
           <RiWechatLine />
           <p className="text-sm">{comments.length}</p>
         </div>
@@ -73,6 +114,25 @@ function Tweet({ tweet }: Props) {
           <HiOutlineUpload />
         </div>
       </div>
+
+      {/* Comment Box */}
+      {commentBoxVisible && (
+        <form onSubmit={handleSubmit} className="mt-3 flex space-x-3">
+          <input
+            onChange={(e) => setCommentInput(e.target.value)}
+            className="flex-1 rounded-lg bg-gray-100 p-2 outline-none"
+            type="text"
+            placeholder="Write a comment..."
+          />
+          <button
+            type="submit"
+            disabled={!commentInput}
+            className="text-twitter disabled:text-gray-200"
+          >
+            Post
+          </button>
+        </form>
+      )}
 
       {comments.length ? (
         <div className="my-2 mt-5 max-h-44 space-y-5 overflow-y-scroll border-t border-gray-100 p-5">
@@ -102,7 +162,9 @@ function Tweet({ tweet }: Props) {
             </div>
           ))}
         </div>
-      ) : ''}
+      ) : (
+        ''
+      )}
     </div>
   );
 }

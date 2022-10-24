@@ -17,7 +17,9 @@ function Sidebar(): JSX.Element {
 
   return (
     <div className="col-span-2 items-center md:items-start flex flex-col">
-      <img src="/images/logo.svg" alt="logo" className="h-8 w-10" />
+      <div className="pl-4 mt-5">
+        <img src="/images/logo.svg" alt="logo" className="h-8 w-10" />
+      </div>
       <SidebarRow Icon={HomeIcon} title="Home" />
       <SidebarRow Icon={HashtagIcon} title="Explore" />
       <SidebarRow Icon={BellIcon} title="Notifications" />

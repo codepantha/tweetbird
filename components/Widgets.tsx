@@ -18,7 +18,7 @@ function Widgets() {
       <TwitterTimelineEmbed
         sourceType="profile"
         screenName="codepantha"
-        options={{ height: 1000 }}
+        options={{ height: 600 }}
       />
     </div>
   );

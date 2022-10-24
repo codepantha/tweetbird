@@ -74,7 +74,7 @@ function Tweet({ tweet }: Props) {
         </div>
       </div>
 
-      {comments.length && (
+      {comments.length ? (
         <div className="my-2 mt-5 max-h-44 space-y-5 overflow-y-scroll border-t border-gray-100 p-5">
           {comments.map((comment) => (
             <div key={comment._id} className="flex space-x-2 relative">
@@ -102,7 +102,7 @@ function Tweet({ tweet }: Props) {
             </div>
           ))}
         </div>
-      )}
+      ) : ''}
     </div>
   );
 }

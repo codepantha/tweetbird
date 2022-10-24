@@ -6,15 +6,24 @@ import {
   HiOutlineLocationMarker
 } from 'react-icons/hi';
 import React, { useState, useRef } from 'react';
+import { Tweet, TweetBody } from '../typings';
+import { fetchTweets } from '../utils/fetchTweets';
+import toast from 'react-hot-toast';
 
-function TweetBox() {
+interface Props {
+  setTweets: React.Dispatch<React.SetStateAction<Tweet[]>>;
+}
+
+function TweetBox({ setTweets }: Props) {
   const [input, setInput] = useState<string>('');
   const { data: session } = useSession();
   const [imageUrlBoxIsOpen, setImageUrlBoxIsOpen] = useState<boolean>(false);
   const [image, setImage] = useState<string>('');
   const imageInputRef = useRef<HTMLInputElement>(null);
 
-  const addImageToTweet = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const addImageToTweet = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.preventDefault();
 
     if (!imageInputRef.current?.value) return;
@@ -22,7 +31,42 @@ function TweetBox() {
     setImage(imageInputRef.current.value);
     imageInputRef.current.value = '';
     setImageUrlBoxIsOpen(false);
-  }
+  };
+
+  const postTweet = async () => {
+    const tweet: TweetBody = {
+      text: input,
+      username: session?.user?.name || 'anonymous',
+      profileImg: session?.user?.image || '/images/avatar.jpg',
+      image
+    };
+
+    const result = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/postTweet`,
+      {
+        method: 'POST',
+        body: JSON.stringify(tweet)
+      }
+    );
+
+    // fetch current tweets
+    const newTweets = await fetchTweets();
+    setTweets(newTweets);
+    toast.success('Tweet posted', { icon: '🚀' });
+  };
+
+  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+
+    try {
+      postTweet();
+      setInput('');
+      setImage('');
+      setImageUrlBoxIsOpen(false);
+    } catch (e) {
+      toast.error('Error posting tweet');
+    }
+  };
 
   return (
     <div className="flex space-x-2 p-5">
@@ -53,6 +97,7 @@ function TweetBox() {
             </div>
 
             <button
+              onClick={handleSubmit}
               disabled={!input || !session}
               className="bg-twitter text-white px-5 py-2 shadow-lg rounded-full font-bold disabled:opacity-40"
             >
@@ -68,12 +113,20 @@ function TweetBox() {
                 type="text"
                 placeholder="Enter Image URL"
               />
-              <button onClick={addImageToTweet} className="font-bold text-white">Add Image</button>
+              <button
+                onClick={addImageToTweet}
+                className="font-bold text-white"
+              >
+                Add Image
+              </button>
             </form>
           )}
 
           {image && (
-            <img className="mt-10 h-40 w-full object-contain rounded-xl shadow-lg" src={image} />
+            <img
+              className="mt-10 h-40 w-full object-contain rounded-xl shadow-lg"
+              src={image}
+            />
           )}
         </form>
       </div>

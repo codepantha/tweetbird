@@ -71,7 +71,7 @@ function TweetBox({ setTweets }: Props) {
   return (
     <div className="flex space-x-2 p-5">
       <img
-        className="mt-4 h-14 w-14 rounded-full object-cover"
+        className="mt-4 h-11 w-11 md:h-14 md:w-14 rounded-full object-cover"
         src={session?.user?.image || '/images/avatar.jpg'}
       />
 
@@ -99,7 +99,7 @@ function TweetBox({ setTweets }: Props) {
             <button
               onClick={handleSubmit}
               disabled={!input || !session}
-              className="bg-twitter text-white px-5 py-2 shadow-lg rounded-full font-bold disabled:opacity-40"
+              className="tweetButton"
             >
               Tweet
             </button>

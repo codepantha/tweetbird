@@ -31,6 +31,12 @@ function Tweet({ tweet }: Props) {
     setComments(comments);
   };
 
+  const showCommentBox = (): void => {
+    session
+      ? setCommentBoxVisible(!commentBoxVisible)
+      : toast.error('Sign in to post a comment');
+  };
+
   const postComment = async () => {
     const comment: CommentBody = {
       comment: commentInput,
@@ -40,13 +46,10 @@ function Tweet({ tweet }: Props) {
     };
 
     try {
-      await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/postComment`,
-        {
-          method: 'POST',
-          body: JSON.stringify(comment)
-        }
-      );
+      await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/postComment`, {
+        method: 'POST',
+        body: JSON.stringify(comment)
+      });
     } catch (e) {
       console.log(e);
     }
@@ -98,7 +101,7 @@ function Tweet({ tweet }: Props) {
 
       <div className="mt-3 flex justify-between">
         <div
-          onClick={() => session && setCommentBoxVisible(!commentBoxVisible)}
+          onClick={showCommentBox}
           className="flex cursor-pointer items-center space-x-3 text-gray-400"
         >
           <RiWechatLine />
@@ -147,8 +150,8 @@ function Tweet({ tweet }: Props) {
 
               <div>
                 <div className="flex items-center space-x-1">
-                  <p className="mr-1 font-bold">{comment.username}</p>
-                  <p className="hidden text-sm text-gray-500 lg:inline">
+                  <p className="mr-1 font-bold text-sm">{comment.username}</p>
+                  <p className="hidden text-gray-500 lg:inline">
                     @{comment.username.replace(/\s+/g, '').toLowerCase()}
                   </p>
 
@@ -157,7 +160,7 @@ function Tweet({ tweet }: Props) {
                     date={comment._createdAt}
                   />
                 </div>
-                <p>{comment.comment}</p>
+                <p className="text-sm">{comment.comment}</p>
               </div>
             </div>
           ))}

@@ -30,6 +30,15 @@
 
 > TweetBird is a twitter clone built using Next.js, TypeScript and Sanity. Users can sign in using Google, post tweets and comment on any tweet they like.
 
+<table>
+  <th>Homepage Desktop View</th>
+  <th>Homepage Mobile View</th>
+  <tr>
+    <td><img src="./public/images/homepage-desktop.png"  alt="1" width = 650px height = 280px ></td>
+    <td><img src="./public/images/homepage-mobile.png" alt="3" width = 375px height = 576px ></td>
+   </tr> 
+</table>
+
 ## 🛠 Built With <a id="built-with"></a>
 
 ### Tech Stack <a id="tech-stack"></a>
